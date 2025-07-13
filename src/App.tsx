@@ -1,4 +1,5 @@
 import {Route, Routes} from 'react-router-dom'
+import Layout from "./components/Layout";
 
 const HomePage = () => {
     return <div data-testid="home-page">메인 페이지</div>
@@ -16,14 +17,21 @@ const NotFoundPage = () => {
     return <div data-testid="not-found-page">404 - 페이지를 찾을 수 없습니다</div>
 }
 
+const CallbackPage = () => {
+    return <div>call-back page</div>
+}
+
 const App = () => {
     return (
-        <Routes>
-            <Route path="/" element={<HomePage/>}/>
-            <Route path="/register" element={<RegisterPage/>}/>
-            <Route path="/my-items" element={<MyItemsPage/>}/>
-            <Route path="*" element={<NotFoundPage/>}/>
-        </Routes>
+        <Layout>
+            <Routes>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="/register" element={<RegisterPage/>}/>
+                <Route path="/my-items" element={<MyItemsPage/>}/>
+                <Route path="*" element={<NotFoundPage/>}/>
+                <Route path="/auth/call-back" element={<CallbackPage/>}/>
+            </Routes>
+        </Layout>
     )
 }
 

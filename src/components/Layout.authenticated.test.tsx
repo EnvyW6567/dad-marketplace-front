@@ -7,7 +7,7 @@ import Layout from './Layout'
 const mockLogin = vi.fn()
 const mockLogout = vi.fn()
 
-vi.mock('../store/authStore', () => ({
+vi.mock('../store/auth.store', () => ({
     useAuthStore: () => ({
         isAuthenticated: true,
         user: {
@@ -38,7 +38,7 @@ describe('Layout - Authenticated User', () => {
         // Then
         expect(screen.getByText('Test User')).toBeInTheDocument()
         expect(screen.getByText('로그아웃')).toBeInTheDocument()
-        expect(screen.queryByText('로그인')).not.toBeInTheDocument()
+        expect(screen.queryByText('디스코드 로그인')).not.toBeInTheDocument()
     })
 
     it('사용자 아바타가 표시되어야 한다', () => {

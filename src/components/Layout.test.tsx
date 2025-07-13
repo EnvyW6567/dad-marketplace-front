@@ -7,7 +7,7 @@ import Layout from './Layout'
 const mockLogin = vi.fn()
 const mockLogout = vi.fn()
 
-vi.mock('../store/authStore', () => ({
+vi.mock('../store/auth.store', () => ({
     useAuthStore: () => ({
         isAuthenticated: false,
         user: null,
@@ -62,7 +62,7 @@ describe('Layout', () => {
         )
 
         // Then
-        expect(screen.getByText('로그인')).toBeInTheDocument()
+        expect(screen.getByText('디스코드 로그인')).toBeInTheDocument()
         expect(screen.queryByText('로그아웃')).not.toBeInTheDocument()
     })
 
@@ -78,7 +78,7 @@ describe('Layout', () => {
         )
 
         // When
-        await user.click(screen.getByText('로그인'))
+        await user.click(screen.getByText('디스코드 로그인'))
 
         // Then
         expect(mockLogin).toHaveBeenCalledOnce()
