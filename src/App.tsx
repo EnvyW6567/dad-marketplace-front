@@ -1,5 +1,5 @@
 import {Route, Routes} from 'react-router-dom'
-import Layout from "./components/Layout";
+import {Layout} from "./components/Layout";
 
 const HomePage = () => {
     return <div data-testid="home-page">메인 페이지</div>

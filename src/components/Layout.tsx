@@ -1,92 +1,91 @@
-import React from 'react'
 import {Link} from 'react-router-dom'
-import {useAuthStore} from '../store/auth.store'
+import {SearchBar} from './search-bar/SearchBar'
+import React from "react";
 
 interface LayoutProps {
     children: React.ReactNode
 }
 
-const Layout: React.FC<LayoutProps> = ({children}) => {
-    const {isAuthenticated, user, login, logout} = useAuthStore()
+export const Layout = ({children}: LayoutProps) => {
+    const handleSearch = (searchTerm: string) => {
+        console.log('검색어:', searchTerm)
+        // TODO: 검색 로직 구현
+    }
 
+    const handleSearchChange = (value: string) => {
+        // TODO: 실시간 검색 제안 로직 구현
+        console.log('검색어 변경:', value)
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b">
+            {/* Navigation Bar */}
+            <nav
+                data-testid="navbar"
+                className="bg-white shadow-sm border-b border-gray-200"
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
+                    <div
+                        className="flex flex-col md:flex-row items-center justify-between h-auto md:h-16 py-4 md:py-0 gap-4 md:gap-0">
                         {/* Logo */}
-                        <div className="flex-shrink-0">
-                            <Link to="/" className="text-xl font-bold text-gray-900">
+                        <div className="flex items-center order-1">
+                            <Link
+                                to="/"
+                                className="text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
+                            >
                                 Highroller Market
                             </Link>
                         </div>
 
-                        {/* Navigation */}
-                        <nav className="hidden md:flex space-x-8">
+                        {/* Search Bar - Center */}
+                        <div className="flex flex-1 justify-center order-3 md:order-2 w-full md:w-auto">
+                            <SearchBar
+                                onSearch={handleSearch}
+                                onChange={handleSearchChange}
+                                className="w-full md:w-auto"
+                            />
+                        </div>
+
+                        {/* Navigation Links */}
+                        <div className="flex items-center space-x-6 order-2 md:order-3">
                             <Link
                                 to="/"
-                                className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium"
+                                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
                             >
                                 홈
                             </Link>
                             <Link
                                 to="/register"
-                                className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium"
+                                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
                             >
                                 아이템 등록
                             </Link>
                             <Link
                                 to="/my-items"
-                                className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium"
+                                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
                             >
-                                마이 페이지
+                                마이페이지
                             </Link>
-                        </nav>
-
-                        {/* User Menu */}
-                        <div className="flex items-center space-x-4">
-                            {isAuthenticated && user ? (
-                                <div className="flex items-center space-x-3">
-                                    {/* User Avatar */}
-                                    <img
-                                        src={user.avatarUrl}
-                                        alt="User Avatar"
-                                        className="h-8 w-8 rounded-full"
-                                    />
-                                    {/* User Name */}
-                                    <span className="text-sm font-medium text-gray-700">
-                    {user.displayName || user.username}
-                  </span>
-                                    {/* Logout Button */}
-                                    <button
-                                        onClick={logout}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
-                                    >
-                                        로그아웃
-                                    </button>
-                                </div>
-                            ) : (
-                                /* Login Button */
-                                <button
-                                    onClick={login}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium"
-                                >
-                                    디스코드 로그인
-                                </button>
-                            )}
                         </div>
                     </div>
                 </div>
-            </header>
+            </nav>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main data-testid="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}
             </main>
+
+            {/* Footer */}
+            <footer className="bg-gray-900 text-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="text-center">
+                        <p className="text-gray-400">
+                            © 2025 Dad Marketplace. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }
-
-export default Layout
