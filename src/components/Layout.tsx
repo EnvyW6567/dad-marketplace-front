@@ -9,11 +9,9 @@ interface LayoutProps {
 export const Layout = ({children}: LayoutProps) => {
     const handleSearch = (searchTerm: string) => {
         console.log('검색어:', searchTerm)
-        // TODO: 검색 로직 구현
     }
 
     const handleSearchChange = (value: string) => {
-        // TODO: 실시간 검색 제안 로직 구현
         console.log('검색어 변경:', value)
     }
 
