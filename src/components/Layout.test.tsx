@@ -2,7 +2,7 @@ import {describe, expect, it, vi} from 'vitest'
 import {render, screen} from '@testing-library/react'
 import {MemoryRouter} from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
-import Layout from './Layout'
+import {Layout} from './Layout'
 
 const mockLogin = vi.fn()
 const mockLogout = vi.fn()
