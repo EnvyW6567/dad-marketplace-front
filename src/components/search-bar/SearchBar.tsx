@@ -1,4 +1,10 @@
-import React, {type KeyboardEvent, useState} from 'react'
+import React, {type KeyboardEvent, useEffect, useRef, useState} from 'react'
+
+interface Equipment {
+    name: string
+    archetype: string
+    id: string
+}
 
 interface SearchBarProps {
     placeholder?: string
@@ -7,6 +13,58 @@ interface SearchBarProps {
     onChange?: (value: string) => void
     onSearch?: (value: string) => void
     className?: string
+}
+
+// 캐시된 이미지 컴포넌트
+const CachedImage = ({
+                         src,
+                         alt,
+                         className,
+                         cachedImages,
+                         onLoadAndCache
+                     }: {
+    src: string
+    alt: string
+    className?: string
+    cachedImages: Map<string, string>
+    onLoadAndCache: (url: string) => Promise<string>
+}) => {
+    const [displaySrc, setDisplaySrc] = useState<string>('')
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const loadImage = async () => {
+            // 캐시된 이미지가 있으면 즉시 사용
+            if (cachedImages.has(src)) {
+                setDisplaySrc(cachedImages.get(src)!)
+                setIsLoading(false)
+                return
+            }
+
+            // 캐시에 없으면 로드하고 캐싱
+            const cachedSrc = await onLoadAndCache(src)
+            if (cachedSrc) {
+                setDisplaySrc(cachedSrc)
+            }
+            setIsLoading(false)
+        }
+
+        loadImage()
+    }, [src, cachedImages, onLoadAndCache])
+
+    if (!displaySrc) return null
+
+    return (
+        <img
+            src={displaySrc}
+            alt={alt}
+            className={className}
+            style={{
+                opacity: isLoading ? 0.5 : 1,
+                transition: 'opacity 0.2s ease-in-out'
+            }}
+        />
+    )
 }
 
 export const SearchBar = ({
@@ -18,6 +76,90 @@ export const SearchBar = ({
                               className = ''
                           }: SearchBarProps) => {
     const [value, setValue] = useState(defaultValue)
+    const [equipments, setEquipments] = useState<Equipment[]>([])
+    const [filteredEquipments, setFilteredEquipments] = useState<Equipment[]>([])
+    const [showAutocomplete, setShowAutocomplete] = useState(false)
+    const [selectedIndex, setSelectedIndex] = useState(-1)
+    const [isDataLoaded, setIsDataLoaded] = useState(false)
+    const [cachedImages, setCachedImages] = useState<Map<string, string>>(new Map())
+
+    const containerRef = useRef<HTMLDivElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    // 이미지를 Base64로 캐싱하는 함수
+    const loadAndCacheImage = async (url: string): Promise<string> => {
+        // 이미 캐시된 이미지가 있으면 반환
+        if (cachedImages.has(url)) {
+            return cachedImages.get(url)!
+        }
+
+        try {
+            const response = await fetch(url)
+            if (!response.ok) throw new Error('Image fetch failed')
+
+            const blob = await response.blob()
+            const base64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result as string)
+                reader.readAsDataURL(blob)
+            })
+
+            // 메모리에 캐싱
+            setCachedImages(prev => new Map(prev).set(url, base64))
+            return base64
+        } catch (error) {
+            console.warn('이미지 로드 실패:', url, error)
+            return '' // 실패 시 빈 문자열 반환
+        }
+    }
+
+    // Equipments 데이터 로드
+    const loadEquipments = async () => {
+        if (isDataLoaded) return
+
+        try {
+            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+            const response = await fetch(`${apiBaseUrl}/api/search-keyword/equipments`)
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            const data = await response.json()
+            setEquipments(data.body || [])
+            setIsDataLoaded(true)
+
+            // 백그라운드에서 이미지 프리로드
+            setTimeout(() => {
+                data.body?.forEach((equipment: Equipment) => {
+                    const imageUrl = `${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`
+                    loadAndCacheImage(imageUrl).catch(error => {
+                        console.warn('이미지 프리로드 실패:', equipment.name, error)
+                    })
+                })
+            }, 100)
+
+        } catch (error) {
+            console.error('equipments 데이터 로드 실패:', error)
+        }
+    }
+
+    // 검색어에 따른 필터링
+    useEffect(() => {
+        if (equipments.length > 0 && value.trim()) {
+            // 검색어가 있을 때만 필터링하여 표시
+            const filtered = equipments.filter(equipment =>
+                equipment.name.toLowerCase().includes(value.toLowerCase())
+            )
+            setFilteredEquipments(filtered)
+            setShowAutocomplete(filtered.length > 0)
+        } else {
+            // 검색어가 없으면 auto-complete 숨김
+            setFilteredEquipments([])
+            setShowAutocomplete(false)
+        }
+        setSelectedIndex(-1)
+    }, [value, equipments])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
@@ -26,8 +168,39 @@ export const SearchBar = ({
     }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            onSearch?.(value)
+        if (!showAutocomplete) {
+            if (e.key === 'Enter') {
+                onSearch?.(value)
+            }
+            return
+        }
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault()
+                setSelectedIndex(prev =>
+                    prev < filteredEquipments.length - 1 ? prev + 1 : prev
+                )
+                break
+            case 'ArrowUp':
+                e.preventDefault()
+                setSelectedIndex(prev => prev > 0 ? prev - 1 : -1)
+                break
+            case 'Enter':
+                e.preventDefault()
+                if (selectedIndex >= 0) {
+                    const selectedEquipment = filteredEquipments[selectedIndex]
+                    setValue(selectedEquipment.name)
+                    onChange?.(selectedEquipment.name)
+                    setShowAutocomplete(false)
+                } else {
+                    onSearch?.(value)
+                }
+                break
+            case 'Escape':
+                setShowAutocomplete(false)
+                setSelectedIndex(-1)
+                break
         }
     }
 
@@ -38,22 +211,54 @@ export const SearchBar = ({
     const handleClearClick = () => {
         setValue('')
         onChange?.('')
+        setShowAutocomplete(false)
+    }
+
+    const handleFocus = () => {
+        loadEquipments()
+        // 데이터가 이미 로드되어 있고 검색어가 있으면 auto-complete 표시
+        if (equipments.length > 0 && value.trim()) {
+            const filtered = equipments.filter(equipment =>
+                equipment.name.toLowerCase().includes(value.toLowerCase())
+            )
+            setFilteredEquipments(filtered)
+            setShowAutocomplete(filtered.length > 0)
+        }
+    }
+
+    const handleBlur = (e: React.FocusEvent) => {
+        // 자동완성 목록 클릭 시 blur 이벤트를 무시
+        if (containerRef.current?.contains(e.relatedTarget as Node)) {
+            return
+        }
+        setTimeout(() => setShowAutocomplete(false), 150)
+    }
+
+    const handleAutocompleteClick = (equipment: Equipment) => {
+        setValue(equipment.name)
+        onChange?.(equipment.name)
+        setShowAutocomplete(false)
+        inputRef.current?.focus()
     }
 
     return (
         <div
+            ref={containerRef}
             data-testid="search-container"
             className={`relative flex w-full max-w-[48rem] ${className}`}
             style={{minWidth: '400px'}}
         >
             <input
+                ref={inputRef}
                 type="text"
                 value={value}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 placeholder={placeholder}
                 disabled={disabled}
-                className="peer w-full rounded-md border border-blue-gray-200 bg-transparent px-3 py-2.5 pl-9 pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                className="peer w-full rounded-md border border-blue-gray-200 bg-transparent px-3 py-3 pl-9 pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
 
             {/* Search Icon */}
@@ -94,6 +299,37 @@ export const SearchBar = ({
                         />
                     </svg>
                 </div>
+            )}
+
+            {/* Autocomplete Dropdown */}
+            {showAutocomplete && filteredEquipments.length > 0 && (
+                <ul
+                    data-testid="autocomplete-list"
+                    className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
+                >
+                    {filteredEquipments.map((equipment, index) => (
+                        <li
+                            key={equipment.id}
+                            onClick={() => handleAutocompleteClick(equipment)}
+                            className={`cursor-pointer px-3 py-2 text-sm hover:bg-gray-100 ${
+                                index === selectedIndex ? 'bg-gray-100' : ''
+                            }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-[3em] h-[3em] flex items-center justify-center flex-shrink-0">
+                                    <CachedImage
+                                        src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`}
+                                        alt={equipment.name}
+                                        className="max-w-full max-h-full object-contain"
+                                        cachedImages={cachedImages}
+                                        onLoadAndCache={loadAndCacheImage}
+                                    />
+                                </div>
+                                <div className="font-medium text-gray-900">{equipment.name}</div>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             )}
         </div>
     )
