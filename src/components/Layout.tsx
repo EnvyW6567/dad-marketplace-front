@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom'
 import {SearchBar} from './search-bar/SearchBar'
 import React from "react";
+import {CurrencyTicker} from "./currency-ticker/CurrencyTicker.tsx";
 
 interface LayoutProps {
     children: React.ReactNode
@@ -41,12 +42,6 @@ export const Layout = ({children}: LayoutProps) => {
                                 홈
                             </Link>
                             <Link
-                                to="/register"
-                                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
-                            >
-                                아이템 등록
-                            </Link>
-                            <Link
                                 to="/my-items"
                                 className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
                             >
@@ -56,6 +51,7 @@ export const Layout = ({children}: LayoutProps) => {
                     </div>
                 </div>
             </nav>
+            <CurrencyTicker/>
 
             {/* Main Content */}
             <main data-testid="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
