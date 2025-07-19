@@ -1,10 +1,6 @@
 import React, {type KeyboardEvent, useEffect, useRef, useState} from 'react'
-
-interface Equipment {
-    name: string
-    archetype: string
-    id: string
-}
+import {useNavigate} from 'react-router-dom'
+import type {Equipment} from "../../types/item.ts";
 
 interface SearchBarProps {
     placeholder?: string
@@ -15,64 +11,11 @@ interface SearchBarProps {
     className?: string
 }
 
-// 캐시된 이미지 컴포넌트
-const CachedImage = ({
-                         src,
-                         alt,
-                         className,
-                         cachedImages,
-                         onLoadAndCache
-                     }: {
-    src: string
-    alt: string
-    className?: string
-    cachedImages: Map<string, string>
-    onLoadAndCache: (url: string) => Promise<string>
-}) => {
-    const [displaySrc, setDisplaySrc] = useState<string>('')
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        const loadImage = async () => {
-            // 캐시된 이미지가 있으면 즉시 사용
-            if (cachedImages.has(src)) {
-                setDisplaySrc(cachedImages.get(src)!)
-                setIsLoading(false)
-                return
-            }
-
-            // 캐시에 없으면 로드하고 캐싱
-            const cachedSrc = await onLoadAndCache(src)
-            if (cachedSrc) {
-                setDisplaySrc(cachedSrc)
-            }
-            setIsLoading(false)
-        }
-
-        loadImage()
-    }, [src, cachedImages, onLoadAndCache])
-
-    if (!displaySrc) return null
-
-    return (
-        <img
-            src={displaySrc}
-            alt={alt}
-            className={className}
-            style={{
-                opacity: isLoading ? 0.5 : 1,
-                transition: 'opacity 0.2s ease-in-out'
-            }}
-        />
-    )
-}
 
 export const SearchBar = ({
                               placeholder = '아이템 검색...',
                               defaultValue = '',
                               disabled = false,
-                              onChange,
-                              onSearch,
                               className = ''
                           }: SearchBarProps) => {
     const [value, setValue] = useState(defaultValue)
@@ -81,37 +24,20 @@ export const SearchBar = ({
     const [showAutocomplete, setShowAutocomplete] = useState(false)
     const [selectedIndex, setSelectedIndex] = useState(-1)
     const [isDataLoaded, setIsDataLoaded] = useState(false)
-    const [cachedImages, setCachedImages] = useState<Map<string, string>>(new Map())
 
     const containerRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+    const navigate = useNavigate()
 
-    // 이미지를 Base64로 캐싱하는 함수
-    const loadAndCacheImage = async (url: string): Promise<string> => {
-        // 이미 캐시된 이미지가 있으면 반환
-        if (cachedImages.has(url)) {
-            return cachedImages.get(url)!
-        }
-
-        try {
-            const response = await fetch(url)
-            if (!response.ok) throw new Error('Image fetch failed')
-
-            const blob = await response.blob()
-            const base64 = await new Promise<string>((resolve) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result as string)
-                reader.readAsDataURL(blob)
+    useEffect(() => {
+        if (selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
+            itemRefs.current[selectedIndex]?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
             })
-
-            // 메모리에 캐싱
-            setCachedImages(prev => new Map(prev).set(url, base64))
-            return base64
-        } catch (error) {
-            console.warn('이미지 로드 실패:', url, error)
-            return '' // 실패 시 빈 문자열 반환
         }
-    }
+    }, [selectedIndex])
 
     // Equipments 데이터 로드
     const loadEquipments = async () => {
@@ -128,17 +54,6 @@ export const SearchBar = ({
             const data = await response.json()
             setEquipments(data.body || [])
             setIsDataLoaded(true)
-
-            // 백그라운드에서 이미지 프리로드
-            setTimeout(() => {
-                data.body?.forEach((equipment: Equipment) => {
-                    const imageUrl = `${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`
-                    loadAndCacheImage(imageUrl).catch(error => {
-                        console.warn('이미지 프리로드 실패:', equipment.name, error)
-                    })
-                })
-            }, 100)
-
         } catch (error) {
             console.error('equipments 데이터 로드 실패:', error)
         }
@@ -164,17 +79,16 @@ export const SearchBar = ({
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         setValue(newValue)
-        onChange?.(newValue)
+    }
+
+    const executeSearch = (selectedEquipment: Equipment) => {
+        if (selectedEquipment) {
+            setShowAutocomplete(false)
+            navigate(`/search`, {state: selectedEquipment})
+        }
     }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (!showAutocomplete) {
-            if (e.key === 'Enter') {
-                onSearch?.(value)
-            }
-            return
-        }
-
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault()
@@ -190,11 +104,9 @@ export const SearchBar = ({
                 e.preventDefault()
                 if (selectedIndex >= 0) {
                     const selectedEquipment = filteredEquipments[selectedIndex]
+
                     setValue(selectedEquipment.name)
-                    onChange?.(selectedEquipment.name)
-                    setShowAutocomplete(false)
-                } else {
-                    onSearch?.(value)
+                    executeSearch(selectedEquipment)
                 }
                 break
             case 'Escape':
@@ -204,13 +116,8 @@ export const SearchBar = ({
         }
     }
 
-    const handleSearchClick = () => {
-        onSearch?.(value)
-    }
-
     const handleClearClick = () => {
         setValue('')
-        onChange?.('')
         setShowAutocomplete(false)
     }
 
@@ -227,7 +134,6 @@ export const SearchBar = ({
     }
 
     const handleBlur = (e: React.FocusEvent) => {
-        // 자동완성 목록 클릭 시 blur 이벤트를 무시
         if (containerRef.current?.contains(e.relatedTarget as Node)) {
             return
         }
@@ -236,9 +142,8 @@ export const SearchBar = ({
 
     const handleAutocompleteClick = (equipment: Equipment) => {
         setValue(equipment.name)
-        onChange?.(equipment.name)
         setShowAutocomplete(false)
-        inputRef.current?.focus()
+        executeSearch(equipment)
     }
 
     return (
@@ -258,79 +163,65 @@ export const SearchBar = ({
                 onBlur={handleBlur}
                 placeholder={placeholder}
                 disabled={disabled}
-                className="peer w-full rounded-md border border-blue-gray-200 bg-transparent px-3 py-3 pl-9 pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                className="peer w-full rounded-md border border-blue-gray-200 bg-transparent px-3 py-3 pl-6 pr-9 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
 
-            {/* Search Icon */}
-            <div
-                className="absolute top-2/4 left-3 grid h-5 w-5 -translate-y-2/4 place-items-center text-blue-gray-500">
-                <svg
-                    data-testid="search-icon"
-                    onClick={disabled ? undefined : handleSearchClick}
-                    className={`h-5 w-5 ${!disabled ? 'cursor-pointer hover:text-gray-900' : 'cursor-not-allowed'}`}
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        clipRule="evenodd"
-                        d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-                        fillRule="evenodd"
-                    />
-                </svg>
-            </div>
-
             {/* Clear Button - 텍스트가 있을 때만 표시 */}
-            {value && !disabled && (
-                <div
-                    className="absolute top-2/4 right-3 grid h-5 w-5 -translate-y-2/4 place-items-center text-blue-gray-500">
-                    <svg
-                        data-testid="clear-button"
-                        onClick={handleClearClick}
-                        className="h-4 w-4 cursor-pointer hover:text-gray-900"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                </div>
-            )}
+            {
+                value && !disabled && (
+                    <div
+                        className="absolute top-2/4 right-3 grid h-5 w-5 -translate-y-2/4 place-items-center text-blue-gray-500">
+                        <svg
+                            data-testid="clear-button"
+                            onClick={handleClearClick}
+                            className="h-4 w-4 cursor-pointer hover:text-gray-900"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </div>
+                )
+            }
 
             {/* Autocomplete Dropdown */}
-            {showAutocomplete && filteredEquipments.length > 0 && (
-                <ul
-                    data-testid="autocomplete-list"
-                    className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
-                >
-                    {filteredEquipments.map((equipment, index) => (
-                        <li
-                            key={equipment.id}
-                            onClick={() => handleAutocompleteClick(equipment)}
-                            className={`cursor-pointer px-3 py-2 text-sm hover:bg-gray-100 ${
-                                index === selectedIndex ? 'bg-gray-100' : ''
-                            }`}
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-[3em] h-[3em] flex items-center justify-center flex-shrink-0">
-                                    <CachedImage
-                                        src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`}
-                                        alt={equipment.name}
-                                        className="max-w-full max-h-full object-contain"
-                                        cachedImages={cachedImages}
-                                        onLoadAndCache={loadAndCacheImage}
-                                    />
+            {
+                showAutocomplete && filteredEquipments.length > 0 && (
+                    <ul
+                        data-testid="autocomplete-list"
+                        className="absolute top-full left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
+                    >
+                        {filteredEquipments.map((equipment, index) => (
+                            <div
+                                key={equipment.id}
+                                ref={el => {
+                                    itemRefs.current[index] = el
+                                }}
+                                onClick={() => handleAutocompleteClick(equipment)}
+                                className={`cursor-pointer px-3 py-2 text-sm hover:bg-gray-100 ${
+                                    index === selectedIndex ? 'bg-gray-100' : ''
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-[3em] h-[3em] flex items-center justify-center flex-shrink-0">
+                                        <img
+                                            src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`}
+                                            alt={equipment.name}
+                                            className="max-w-full max-h-full object-contain"
+                                        />
+                                    </div>
+                                    <div className="font-medium text-gray-900">{equipment.name}</div>
                                 </div>
-                                <div className="font-medium text-gray-900">{equipment.name}</div>
                             </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                        ))}
+                    </ul>
+                )
+            }
         </div>
     )
 }
