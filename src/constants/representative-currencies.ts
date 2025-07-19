@@ -9,5 +9,20 @@ export const representativeCurrencies = [
         "name": "Gold Coin Chest",
         "id": "GoldCoinChest",
         "archetype": "GoldCoinChest"
+    },
+    {
+        "name": "Golden Key",
+        "id": "GoldenKey",
+        "archetype": "GoldenKey"
+    },
+    {
+        "name": "Troll Pelt",
+        "id": "TrollPelt",
+        "archetype": "TrollPelt"
+    },
+    {
+        "name": "Spectral Coinbag",
+        "id": "SpectralCoinbag",
+        "archetype": "SpectralCoinbag"
     }
 ]
