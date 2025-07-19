@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Item ID Fetcher - CORS 우회</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .cors-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .method-card {
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .method-card.active {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+
+        .method-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-description {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .method-instructions {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.loading {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #2196f3;
+        }
+
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .progress-container {
+            background: #f5f5f5;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        #resultTextarea {
+            background: #f8f9fa;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .cors-proxy-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #dee2e6;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎮 Item ID Fetcher - CORS 우회</h1>
+
+    <div class="cors-methods">
+        <div class="method-card" data-method="proxy" onclick="selectMethod('proxy')">
+            <div class="method-title">
+                🌐 CORS 프록시 서버
+            </div>
+            <div class="method-description">
+                외부 프록시 서버를 통해 API 호출 (가장 쉬움)
+            </div>
+            <div class="method-instructions">
+                바로 사용 가능. 외부 서비스 의존성이 있음.
+            </div>
+        </div>
+
+        <div class="method-card" data-method="extension" onclick="selectMethod('extension')">
+            <div class="method-title">
+                🔧 브라우저 확장 프로그램
+            </div>
+            <div class="method-description">
+                CORS 비활성화 확장 프로그램 사용
+            </div>
+            <div class="method-instructions">
+                "CORS Unblock" 같은 확장 프로그램 설치 필요.
+            </div>
+        </div>
+
+        <div class="method-card" data-method="flags" onclick="selectMethod('flags')">
+            <div class="method-title">
+                ⚡ 브라우저 플래그
+            </div>
+            <div class="method-description">
+                Chrome을 CORS 비활성화 모드로 실행
+            </div>
+            <div class="method-instructions">
+                Chrome을 --disable-web-security 플래그로 실행.
+            </div>
+        </div>
+    </div>
+
+    <div class="input-section">
+        <label for="jsonInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50;">
+            JSON 데이터 입력:
+        </label>
+        <textarea id="jsonInput"
+                  placeholder='{"body": [{"name": "Arcane Hood", "archetype": "ArcaneHood"}, ...]}'></textarea>
+    </div>
+
+    <div class="button-group">
+        <button class="btn-secondary" id="loadSampleBtn">샘플 데이터 로드</button>
+        <button class="btn-primary" id="fetchIdsBtn">ID 가져오기</button>
+        <button class="btn-success hidden" id="downloadBtn">JSON 다운로드</button>
+    </div>
+
+    <div class="status hidden" id="status"></div>
+    <div class="progress-container hidden" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="stats hidden" id="stats"></div>
+
+    <div class="result-section">
+        <label for="resultTextarea" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50;">
+            결과:
+        </label>
+        <textarea id="resultTextarea" readonly></textarea>
+    </div>
+
+    <!-- CORS 우회 방법 안내 -->
+    <div class="method-instructions" id="corsInstructions" style="margin-top: 20px;">
+        <h4>🛠️ CORS 우회 방법:</h4>
+
+        <h5>방법 1: CORS 프록시 서버 (추천)</h5>
+        <div class="cors-proxy-url">현재 사용 중: https://api.allorigins.win/raw?url=</div>
+        <p>별도 설정 없이 바로 사용 가능합니다.</p>
+
+        <h5>방법 2: 브라우저 확장 프로그램</h5>
+        <ol>
+            <li>Chrome 웹스토어에서 "CORS Unblock" 또는 "CORS Everywhere" 설치</li>
+            <li>확장 프로그램 활성화</li>
+            <li>페이지 새로고침 후 사용</li>
+        </ol>
+
+        <h5>방법 3: Chrome 플래그로 실행</h5>
+        <ol>
+            <li>Chrome 완전 종료</li>
+            <li>터미널/명령 프롬프트에서 실행:</li>
+            <div class="cors-proxy-url">
+                Windows: chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security<br>
+                macOS: open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args
+                --user-data-dir="/tmp/chrome_dev_sess" --disable-web-security<br>
+                Linux: google-chrome --user-data-dir="/tmp/chrome_dev_sess" --disable-web-security
+            </div>
+        </ol>
+    </div>
+</div>
+
+<script>
+    let processedData = null;
+    let selectedMethod = 'proxy';
+
+    // 방법 선택
+    function selectMethod(method) {
+        selectedMethod = method;
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.querySelector(`[data-method="${method}"]`).classList.add('active');
+    }
+
+    // 기본 선택
+    selectMethod('proxy');
+
+    // 샘플 데이터 로드
+    document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        const sampleData = {
+            "body": [
+                {"name": "Arcane Hood", "archetype": "ArcaneHood"},
+                {"name": "Armet", "archetype": "Armet"},
+                {"name": "Barbuta Helm", "archetype": "BarbutaHelm"},
+                {"name": "Ceremonial Headdress", "archetype": "CeremonialHeaddress"},
+                {"name": "Chapel De Fer", "archetype": "ChapelDeFer"}
+            ]
+        };
+        document.getElementById('jsonInput').value = JSON.stringify(sampleData, null, 2);
+    });
+
+    // CORS 우회 API 호출 함수
+    async function fetchItemIdWithCORS(itemName) {
+        const originalUrl = `https://api.darkerdb.com/v1/items?name=${encodeURIComponent(itemName)}&condense=true`;
+        let finalUrl;
+
+        switch (selectedMethod) {
+            case 'proxy':
+                // 여러 CORS 프록시 서비스 시도
+                const proxies = [
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`,
+                    `https://corsproxy.io/?${encodeURIComponent(originalUrl)}`,
+                    `https://cors-anywhere.herokuapp.com/${originalUrl}`,
+                    `https://proxy.cors.sh/${originalUrl}`
+                ];
+
+                for (const proxyUrl of proxies) {
+                    try {
+                        const response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.body && data.body.length > 0) {
+                                const minId = data.body.reduce((min, item) => {
+                                    const currentId = parseInt(item.id.split('_')[1]);
+                                    const minIdNum = parseInt(min.id.split('_')[1]);
+                                    return currentId < minIdNum ? item : min;
+                                });
+                                return minId.id;
+                            }
+                            return null;
+                        }
+                    } catch (error) {
+                        console.log(`프록시 ${proxyUrl} 실패:`, error);
+                        continue;
+                    }
+                }
+                throw new Error('모든 CORS 프록시 서버에서 실패');
+
+            case 'extension':
+            case 'flags':
+            default:
+                // 직접 API 호출 (CORS 우회 설정이 되어있어야 함)
+                const response = await fetch(originalUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.body && data.body.length > 0) {
+                    const minId = data.body.reduce((min, item) => {
+                        const currentId = parseInt(item.id.split('_')[1]);
+                        const minIdNum = parseInt(min.id.split('_')[1]);
+                        return currentId < minIdNum ? item : min;
+                    });
+                    return minId.id;
+                }
+                return null;
+        }
+    }
+
+    // 상태 표시 함수
+    function showStatus(message, type = 'loading') {
+        const statusEl = document.getElementById('status');
+        statusEl.className = `status ${type}`;
+
+        if (type === 'loading') {
+            statusEl.innerHTML = `<span class="loading-spinner"></span>${message}`;
+        } else {
+            statusEl.textContent = message;
+        }
+
+        statusEl.classList.remove('hidden');
+    }
+
+    // 진행률 업데이트 함수
+    function updateProgress(current, total) {
+        const progressBar = document.getElementById('progressBar');
+        const percentage = (current / total) * 100;
+        progressBar.style.width = `${percentage}%`;
+
+        if (current === total) {
+            setTimeout(() => {
+                document.getElementById('progressContainer').classList.add('hidden');
+            }, 1000);
+        }
+    }
+
+    // 통계 표시 함수
+    function showStats(successful, failed, total) {
+        const statsEl = document.getElementById('stats');
+        statsEl.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div class="stat-label">총 아이템</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${successful}</div>
+                    <div class="stat-label">성공</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${failed}</div>
+                    <div class="stat-label">실패</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.round((successful / total) * 100)}%</div>
+                    <div class="stat-label">성공률</div>
+                </div>
+            `;
+        statsEl.classList.remove('hidden');
+    }
+
+    // ID 가져오기 메인 함수
+    document.getElementById('fetchIdsBtn').addEventListener('click', async () => {
+        const jsonInput = document.getElementById('jsonInput').value.trim();
+
+        if (!jsonInput) {
+            showStatus('JSON 데이터를 입력해주세요.', 'error');
+            return;
+        }
+
+        try {
+            const data = JSON.parse(jsonInput);
+
+            if (!data.body || !Array.isArray(data.body)) {
+                showStatus('올바른 JSON 형식이 아닙니다. "body" 배열이 필요합니다.', 'error');
+                return;
+            }
+
+            const total = data.body.length;
+            let successful = 0;
+            let failed = 0;
+
+            showStatus(`${total}개 아이템의 ID를 가져오는 중... (${selectedMethod} 방식 사용)`, 'loading');
+            document.getElementById('progressContainer').classList.remove('hidden');
+
+            // 각 아이템에 대해 ID 가져오기
+            for (let i = 0; i < data.body.length; i++) {
+                const item = data.body[i];
+
+                if (item.name) {
+                    showStatus(`${item.name} ID 가져오는 중... (${i + 1}/${total})`, 'loading');
+
+                    try {
+                        const id = await fetchItemIdWithCORS(item.name);
+
+                        if (id) {
+                            item.id = id;
+                            successful++;
+                        } else {
+                            failed++;
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching ID for ${item.name}:`, error);
+                        failed++;
+                    }
+
+                    updateProgress(i + 1, total);
+
+                    // API 요청 간격 조절
+                    if (i < data.body.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+                } else {
+                    failed++;
+                    updateProgress(i + 1, total);
+                }
+            }
+
+            processedData = data;
+            document.getElementById('resultTextarea').value = JSON.stringify(data, null, 2);
+
+            showStatus(`완료! ${successful}개 성공, ${failed}개 실패`, 'success');
+            showStats(successful, failed, total);
+            document.getElementById('downloadBtn').classList.remove('hidden');
+
+        } catch (error) {
+            showStatus(`오류 발생: ${error.message}`, 'error');
+
+            if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                showStatus(`CORS 오류 발생! 다른 우회 방법을 선택하거나 브라우저 설정을 확인해주세요.`, 'error');
+            }
+        }
+    });
+
+    // JSON 다운로드 함수
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        if (!processedData) return;
+
+        const dataStr = JSON.stringify(processedData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'items_with_ids.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+    });
+
+    // 전역 함수 등록
+    window.selectMethod = selectMethod;
+</script>
+</body>
+</html>

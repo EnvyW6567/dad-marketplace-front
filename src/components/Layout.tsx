@@ -7,14 +7,6 @@ interface LayoutProps {
 }
 
 export const Layout = ({children}: LayoutProps) => {
-    const handleSearch = (searchTerm: string) => {
-        console.log('검색어:', searchTerm)
-    }
-
-    const handleSearchChange = (value: string) => {
-        console.log('검색어 변경:', value)
-    }
-
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Navigation Bar */}
@@ -37,11 +29,7 @@ export const Layout = ({children}: LayoutProps) => {
 
                         {/* Search Bar - Center */}
                         <div className="flex flex-1 justify-center order-3 md:order-2 w-full md:w-auto">
-                            <SearchBar
-                                onSearch={handleSearch}
-                                onChange={handleSearchChange}
-                                className="w-full md:w-auto"
-                            />
+                            <SearchBar className="w-full md:w-auto"/>
                         </div>
 
                         {/* Navigation Links */}

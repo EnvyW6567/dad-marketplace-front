@@ -1,5 +1,7 @@
+// src/App.tsx
 import {Route, Routes} from 'react-router-dom'
-import {Layout} from "./components/Layout";
+import {Layout} from "./components/Layout"
+import SearchPage from './pages/SearchPage'
 
 const HomePage = () => {
     return <div data-testid="home-page">메인 페이지</div>
@@ -26,10 +28,11 @@ const App = () => {
         <Layout>
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
+                <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
                 <Route path="/my-items" element={<MyItemsPage/>}/>
-                <Route path="*" element={<NotFoundPage/>}/>
                 <Route path="/auth/call-back" element={<CallbackPage/>}/>
+                <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
         </Layout>
     )
