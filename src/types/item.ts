@@ -1,3 +1,5 @@
+import type {User} from "../store/auth.store.ts";
+
 export interface ItemData {
     id: string
     cursor: number
@@ -50,7 +52,6 @@ export interface DarkerDbResponse<T> {
 export interface PrimaryStat {
     name: string
     value: string | number
-    isNegative?: boolean
 }
 
 export const RARITY_COLORS: Record<string, string> = {
@@ -63,6 +64,17 @@ export const RARITY_COLORS: Record<string, string> = {
     'Unique': 'bg-[#e3dd95]',
     'Artifact': 'bg-red-600'
 }
+
+export const RARITY_COLORS_TEXT: Record<string, string> = {
+    'Poor': 'text-gray-600',
+    'Common': 'text-gray-700',
+    'Uncommon': 'text-green-600',
+    'Rare': 'text-blue-600',
+    'Epic': 'text-purple-600',
+    'Legendary': 'text-yellow-600',
+    'Unique': 'text-[#e3dd95]',
+    'Artifact': 'text-red-600'
+};
 
 export const RARITY_ROMAN: Record<string, string> = {
     'Poor': 'I',
@@ -79,4 +91,21 @@ export interface Equipment {
     name: string
     archetype: string
     id: string
+}
+
+export interface RegisteredItemData {
+    id: string
+    name: string
+    rarity: string
+    options: Option[]
+    type: 'WTS' | 'WTB'
+    user: User
+    description: string
+    price: string
+}
+
+export interface Option {
+    name: string,
+    value: string | number | undefined
+    isPrimary: boolean
 }
