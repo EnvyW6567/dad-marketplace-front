@@ -142,7 +142,7 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
             </div>
 
             {/* 아이템 정보 */}
-            <div className="p-4">
+            <div className="p-5">
                 {/* 아이템 이름 */}
                 <h3 className="text-xl font-bold text-gray-900 text-center mb-4">
                     {selectedItem.name}
@@ -150,12 +150,12 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
 
                 {/* 아이템 이미지 영역 */}
                 <div
-                    className="bg-gray-100 rounded-lg p-8 mb-4 flex items-center justify-center min-h-[200px] max-h-400">
+                    className="bg-gray-100 rounded-lg p-8 mb-4 flex items-center justify-center min-h-[60px] max-h-60">
                     <div className="text-4xl text-gray-400">
                         <img
                             src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${selectedItem.id}/icon`}
                             alt={selectedItem.name}
-                            className={className}
+                            className="max-h-50"
                         />
                     </div>
                 </div>
