@@ -210,7 +210,7 @@ export const SearchBar = ({
                                 <div className="flex items-center gap-3">
                                     <div className="w-[3em] h-[3em] flex items-center justify-center flex-shrink-0">
                                         <img
-                                            src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${equipment.id}/icon`}
+                                            src={`${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${equipment.id}/icon`}
                                             alt={equipment.name}
                                             className="max-w-full max-h-full object-contain"
                                         />
