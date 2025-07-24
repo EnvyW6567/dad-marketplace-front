@@ -54,6 +54,14 @@ export interface PrimaryStat {
     value: string | number
 }
 
+export interface SecondaryStatOption {
+    name: string
+    minValue: number
+    maxValue: number
+    displayName: string
+}
+
+
 export const RARITY_COLORS: Record<string, string> = {
     'Poor': 'bg-gray-600',
     'Common': 'bg-gray-500',

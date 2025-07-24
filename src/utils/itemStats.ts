@@ -1,7 +1,7 @@
-import type {ItemData, PrimaryStat} from '../types/item'
+import type {ItemData, PrimaryStat, SecondaryStatOption} from '../types/item'
 
 export const formatStatName = (statKey: string): string => {
-    const cleanKey = statKey.replace(/^primary_(min|max)_/, '')
+    const cleanKey = statKey.replace(/^(primary|secondary)_(min|max)_/, '')
 
     const specialStats: Record<string, string> = {
         'weapon_damage': 'Physical Base Weapon Damage',
@@ -81,6 +81,45 @@ export const extractPrimaryStats = (item: ItemData): PrimaryStat[] => {
     return stats
 }
 
+export const extractSecondaryOptions = (item: ItemData): SecondaryStatOption[] => {
+    const options: SecondaryStatOption[] = []
+    const processedStats = new Set<string>()
+    console.log(item)
+
+    // 모든 키를 검사하여 secondary_min_ 패턴을 찾음
+    Object.keys(item).forEach(key => {
+        if (key.startsWith('secondary_min_') && !key.includes('enchanted')) {
+            const statName = key.replace('secondary_min_', '')
+
+            if (processedStats.has(statName)) {
+                return
+            }
+
+            const minKey = `secondary_min_${statName}`
+            const maxKey = `secondary_max_${statName}`
+
+            const minValue = item[minKey] as number
+            const maxValue = item[maxKey] as number
+
+            if (minValue !== undefined && maxValue !== undefined) {
+                const displayName = formatStatName(minKey)
+
+                options.push({
+                    name: statName,
+                    minValue,
+                    maxValue,
+                    displayName
+                })
+
+                processedStats.add(statName)
+            }
+        }
+    })
+
+    return options.sort((a, b) => a.displayName.localeCompare(b.displayName))
+}
+
+
 /**
  * 희귀도별로 아이템들을 그룹화
  */
@@ -105,4 +144,19 @@ export const getAvailableRarities = (items: ItemData[]): string[] => {
     const availableRarities = new Set(items.map(item => item.rarity))
     return ['Poor', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Unique', 'Artifact']
         .filter(rarity => availableRarities.has(rarity))
+}
+
+export const getSecondarySlotsByRarity = (rarity: string): number => {
+    const raritySlots: Record<string, number> = {
+        'Poor': 0,
+        'Common': 0,
+        'Uncommon': 1,
+        'Rare': 2,
+        'Epic': 3,
+        'Legendary': 4,
+        'Unique': 1, // Unique는 특별한 경우로 1개의 강력한 옵션
+        'Artifact': 5
+    }
+
+    return raritySlots[rarity] || 0
 }

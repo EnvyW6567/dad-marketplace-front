@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react'
+import {useNavigate} from 'react-router-dom'
 import {type ItemData, RARITY_COLORS, RARITY_ROMAN} from '../../types/item.ts'
 import {useDarkerDbApi} from '../../hooks/useDarkerDBApi.ts'
 import {extractPrimaryStats, getAvailableRarities, groupItemsByRarity} from '../../utils/itemStats.ts'
@@ -10,6 +11,7 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
     const [selectedRarity, setSelectedRarity] = useState<string>('Poor')
+    const navigate = useNavigate()
 
     // API 엔드포인트를 메모화하여 불필요한 재요청 방지
     const endpoint = useMemo(() => {
@@ -75,9 +77,14 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
     }
 
     const handleRegisterItem = () => {
-        // 아이템 등록 로직 구현
-        console.log('아이템 등록:', selectedItem)
-        // 추후 등록 페이지로 이동하거나 모달 열기 등의 로직 추가
+        if (selectedItem) {
+            navigate('/register', {
+                state: {
+                    archetype: selectedItem.archetype,
+                    itemData: data
+                }
+            })
+        }
     }
 
     if (loading) {
@@ -179,24 +186,6 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
                         </div>
                     ))}
                 </div>
-
-                {/*/!* 아이템 정보 *!/*/}
-                {/*<div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-600">*/}
-                {/*    <div className="grid grid-cols-2 gap-2">*/}
-                {/*        <div>*/}
-                {/*            <span className="font-medium">타입:</span> {selectedItem.type}*/}
-                {/*        </div>*/}
-                {/*        <div>*/}
-                {/*            <span className="font-medium">슬롯:</span> {selectedItem.slot_type || 'N/A'}*/}
-                {/*        </div>*/}
-                {/*        <div>*/}
-                {/*            <span className="font-medium">기어 스코어:</span> {selectedItem.gear_score}*/}
-                {/*        </div>*/}
-                {/*        <div>*/}
-                {/*            <span className="font-medium">판매가:</span> {selectedItem.vendor_price}G*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="px-5">

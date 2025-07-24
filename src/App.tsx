@@ -2,13 +2,10 @@
 import {Route, Routes} from 'react-router-dom'
 import {Layout} from "./components/Layout"
 import SearchPage from './pages/SearchPage'
+import RegisterPage from './pages/RegisterPage'
 
 const HomePage = () => {
     return <div data-testid="home-page">메인 페이지</div>
-}
-
-const RegisterPage = () => {
-    return <div data-testid="register-page">아이템 등록 페이지</div>
 }
 
 const MyItemsPage = () => {
