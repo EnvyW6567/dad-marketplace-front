@@ -10,10 +10,10 @@ interface LayoutProps {
 export const Layout = ({children}: LayoutProps) => {
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Navigation Bar */}
+            {/* Fixed Navigation Bar */}
             <nav
                 data-testid="navbar"
-                className="bg-white shadow-sm border-b border-gray-200"
+                className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-50"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div
@@ -51,10 +51,14 @@ export const Layout = ({children}: LayoutProps) => {
                     </div>
                 </div>
             </nav>
-            <CurrencyTicker/>
 
-            {/* Main Content */}
-            <main data-testid="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Fixed Currency Ticker */}
+            <div className="fixed top-16 md:top-16 left-0 right-0 z-40">
+                <CurrencyTicker/>
+            </div>
+
+            {/* Main Content - Padding top to account for fixed header */}
+            <main data-testid="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-40 md:pt-36">
                 {children}
             </main>
 

@@ -74,6 +74,12 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
         refetch()
     }
 
+    const handleRegisterItem = () => {
+        // 아이템 등록 로직 구현
+        console.log('아이템 등록:', selectedItem)
+        // 추후 등록 페이지로 이동하거나 모달 열기 등의 로직 추가
+    }
+
     if (loading) {
         return (
             <div className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm ${className}`}>
@@ -142,7 +148,7 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
             </div>
 
             {/* 아이템 정보 */}
-            <div className="p-4">
+            <div className="p-5">
                 {/* 아이템 이름 */}
                 <h3 className="text-xl font-bold text-gray-900 text-center mb-4">
                     {selectedItem.name}
@@ -150,12 +156,12 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
 
                 {/* 아이템 이미지 영역 */}
                 <div
-                    className="bg-gray-100 rounded-lg p-8 mb-4 flex items-center justify-center min-h-[200px] max-h-400">
+                    className="bg-gray-100 rounded-lg p-8 mb-4 flex items-center justify-center min-h-[60px] max-h-60">
                     <div className="text-4xl text-gray-400">
                         <img
-                            src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${selectedItem.id}/icon`}
+                            src={`${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${selectedItem.id}/icon`}
                             alt={selectedItem.name}
-                            className={className}
+                            className="max-h-50"
                         />
                     </div>
                 </div>
@@ -174,32 +180,34 @@ const ItemCard: React.FC<ItemCardProps> = ({itemName, className = ''}) => {
                     ))}
                 </div>
 
-                {/* 아이템 정보 */}
-                <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-600">
-                    <div className="grid grid-cols-2 gap-2">
-                        <div>
-                            <span className="font-medium">타입:</span> {selectedItem.type}
-                        </div>
-                        <div>
-                            <span className="font-medium">슬롯:</span> {selectedItem.slot_type || 'N/A'}
-                        </div>
-                        <div>
-                            <span className="font-medium">기어 스코어:</span> {selectedItem.gear_score}
-                        </div>
-                        <div>
-                            <span className="font-medium">판매가:</span> {selectedItem.vendor_price}G
-                        </div>
+                {/*/!* 아이템 정보 *!/*/}
+                {/*<div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-600">*/}
+                {/*    <div className="grid grid-cols-2 gap-2">*/}
+                {/*        <div>*/}
+                {/*            <span className="font-medium">타입:</span> {selectedItem.type}*/}
+                {/*        </div>*/}
+                {/*        <div>*/}
+                {/*            <span className="font-medium">슬롯:</span> {selectedItem.slot_type || 'N/A'}*/}
+                {/*        </div>*/}
+                {/*        <div>*/}
+                {/*            <span className="font-medium">기어 스코어:</span> {selectedItem.gear_score}*/}
+                {/*        </div>*/}
+                {/*        <div>*/}
+                {/*            <span className="font-medium">판매가:</span> {selectedItem.vendor_price}G*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="px-5">
+                        <button
+                            onClick={handleRegisterItem}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                            Register Item
+                        </button>
                     </div>
                 </div>
-
-                {/* 아이템 설명 */}
-                {selectedItem.description && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                        <p className="text-gray-600 text-sm italic text-center">
-                            {selectedItem.description}
-                        </p>
-                    </div>
-                )}
             </div>
         </div>
     )
