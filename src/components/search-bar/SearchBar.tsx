@@ -76,6 +76,10 @@ export const SearchBar = ({
         setSelectedIndex(-1)
     }, [value, equipments])
 
+    useEffect(() => {
+        console.log(filteredEquipments)
+    }, [filteredEquipments]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         setValue(newValue)
@@ -198,7 +202,7 @@ export const SearchBar = ({
                     >
                         {filteredEquipments.map((equipment, index) => (
                             <div
-                                key={equipment.id}
+                                key={`${equipment.id}_${index}`}
                                 ref={el => {
                                     itemRefs.current[index] = el
                                 }}
