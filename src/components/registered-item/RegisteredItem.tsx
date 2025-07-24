@@ -14,7 +14,7 @@ export const RegisteredItem: React.FC<RegisteredItemProps> = ({
     const [isHovered] = useState(false);
 
     const secondaryOptions = registeredItemData.options.filter(option => !option.isPrimary);
-    const itemImageUrl = `${import.meta.env.VITE_API_DARKER_DB_URL}/items/${itemData.id}/icon`;
+    const itemImageUrl = `${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${itemData.id}/icon`;
     const rarityTextColor = RARITY_COLORS_TEXT[registeredItemData.rarity] || 'text-gray-700';
 
     return (

@@ -48,7 +48,7 @@ const CurrencyItem: React.FC<{ currency: typeof representativeCurrencies[0] }> =
         return (
             <div className="flex items-center space-x-2">
                 <img
-                    src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${currency.id}/icon`}
+                    src={`${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${currency.id}/icon`}
                     alt={currency.name}
                     className="w-6 h-6"
                     onError={(e) => {
@@ -64,7 +64,7 @@ const CurrencyItem: React.FC<{ currency: typeof representativeCurrencies[0] }> =
     return (
         <div ref={containerRef} className="flex items-center space-x-2 min-w-0 flex-shrink-0">
             <img
-                src={`${import.meta.env.VITE_API_DARKER_DB_URL}/items/${currency.id}/icon`}
+                src={`${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${currency.id}/icon`}
                 alt={currency.name}
                 className="h-8 flex-shrink-0"
                 onError={(e) => {
