@@ -88,7 +88,7 @@ export const mockRegisteredItems: RegisteredItemData[] = [
             {name: "Buff Duration Bonus", value: "4%", isPrimary: false},
             {name: "Cooldown Reduction", value: "3%", isPrimary: false},
             {name: "Max Health", value: 4, isPrimary: false},
-            
+
         ],
         type: "WTB",
         user: {
@@ -99,6 +99,364 @@ export const mockRegisteredItems: RegisteredItemData[] = [
         },
         description: "민첩성 빌드를 위한 반지를 찾고 있습니다. 민첩성 30 이상, 이동속도 옵션 필수입니다.",
         price: "120,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_004",
+        name: "Longword",
+        rarity: "Legendary",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 39, isPrimary: true},
+            // Secondary options (5개 - Legendary)
+            {name: "Buff Duration Bonus", value: "4%", isPrimary: false},
+            {name: "Cooldown Reduction", value: "3%", isPrimary: false},
+            {name: "Max Health", value: 4, isPrimary: false},
+
+        ],
+        type: "WTB",
+        user: {
+            username: "speedrunner",
+            displayName: "SpeedRunner",
+            email: "speed@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "민첩성 빌드를 위한 반지를 찾고 있습니다. 민첩성 30 이상, 이동속도 옵션 필수입니다.",
+        price: "120,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_004",
+        name: "Longword",
+        rarity: "Legendary",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 39, isPrimary: true},
+            // Secondary options (5개 - Legendary)
+            {name: "Buff Duration Bonus", value: "4%", isPrimary: false},
+            {name: "Cooldown Reduction", value: "3%", isPrimary: false},
+            {name: "Max Health", value: 4, isPrimary: false},
+
+        ],
+        type: "WTB",
+        user: {
+            username: "speedrunner",
+            displayName: "SpeedRunner",
+            email: "speed@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "민첩성 빌드를 위한 반지를 찾고 있습니다. 민첩성 30 이상, 이동속도 옵션 필수입니다.",
+        price: "120,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_004",
+        name: "Longword",
+        rarity: "Legendary",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 39, isPrimary: true},
+            // Secondary options (5개 - Legendary)
+            {name: "Buff Duration Bonus", value: "4%", isPrimary: false},
+            {name: "Cooldown Reduction", value: "3%", isPrimary: false},
+            {name: "Max Health", value: 4, isPrimary: false},
+
+        ],
+        type: "WTB",
+        user: {
+            username: "speedrunner",
+            displayName: "SpeedRunner",
+            email: "speed@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "민첩성 빌드를 위한 반지를 찾고 있습니다. 민첩성 30 이상, 이동속도 옵션 필수입니다.",
+        price: "120,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
+    },
+    {
+        id: "item_005",
+        name: "Longword",
+        rarity: "Unique",
+        options: [
+            // Primary options
+            {name: "Move Speed", value: -30, isPrimary: true},
+            {name: "Weapon Damage", value: 40, isPrimary: true},
+            // Secondary options (6개 - Unique)
+            {name: "Magical Interaction Speed", value: "3%", isPrimary: false},
+            {name: "Max Health Bonus", value: "2%", isPrimary: false},
+            {name: "Move Speed Bonus", value: "1%", isPrimary: false},
+            {name: "Physical Power", value: 3, isPrimary: false},
+            {name: "Regular Interaction Speed", value: "4%", isPrimary: false},
+            {name: "Debuff Duration Bonus", value: "4%", isPrimary: false}
+        ],
+        type: "WTS",
+        user: {
+            username: "archmage88",
+            displayName: "ArchMage",
+            email: "archmage@example.com",
+            avatarUrl: "https://mblogthumb-phinf.pstatic.net/MjAyNDAzMjZfMTk3/MDAxNzExMzgyMDgyODAx.JCkvPFnGCj_VDM_VG3ZZKSjz1vQlqj--YAU7IXnwZDAg.DeaQ4ffhow-qYD_uo6_AgnLSw7Q_MvsbQKoOtv1LjxQg.PNG/4.png?type=w400"
+        },
+        description: "최고급 마법사 로브입니다. +12 강화 완료! 마나와 마법력 옵션이 모두 최상급입니다. 신속 거래 원합니다.",
+        price: "200,000"
     },
     {
         id: "item_005",
