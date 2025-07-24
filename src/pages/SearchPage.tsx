@@ -18,7 +18,7 @@ const SearchPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* 좌측: 아이템 카드 */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-4">
+                        <div className="sticky top-40">
                             {selectedItem ? (
                                 <ItemCard
                                     itemName={selectedItem.archetype}
