@@ -12,7 +12,7 @@ interface AuthState {
     user: User | null
     isLoading: boolean
     login: () => void
-    logout: () => void
+    logout: () => Promise<void>
     setUser: (user: User) => void
     setLoading: (loading: boolean) => void
 }
@@ -26,10 +26,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/auth/login/discord`
     },
 
-    logout: () => {
-        // 토큰 제거 및 상태 초기화
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
+    logout: async () => {
         set({
             isAuthenticated: false,
             user: null
