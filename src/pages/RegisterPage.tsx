@@ -7,7 +7,7 @@ import {
     getAvailableRarities,
     getSecondarySlotsByRarity,
     groupItemsByRarity,
-} from '../utils/itemStats'
+} from '../utils/itemStats.util.ts'
 
 interface SecondaryOption {
     stat: SecondaryStatOption
@@ -23,7 +23,7 @@ const RegisterPage: React.FC = () => {
     const [selectedRarity, setSelectedRarity] = useState<string>('Poor')
     const [primaryStats, setPrimaryStats] = useState<Record<string, number>>({})
     const [secondaryOptions, setSecondaryOptions] = useState<SecondaryOption[]>([])
-    
+
     const {availableRarities, selectedItem} = useMemo(() => {
         if (!itemData || !Array.isArray(itemData)) {
             return {
@@ -142,10 +142,9 @@ const RegisterPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-4xl mx-auto pt-8 px-4">
+            <div className="max-w-4xl mx-auto pt-4 px-4">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">아이템 등록</h1>
-                    <p className="text-gray-600">{archetype} 아이템을 등록합니다</p>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Register Item</h1>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -181,7 +180,7 @@ const RegisterPage: React.FC = () => {
                                     <img
                                         src={`${import.meta.env.VITE_API_DARKER_DB_URL_ICON}/items/${selectedItem.id}/icon`}
                                         alt={selectedItem.name}
-                                        className="max-h-20"
+                                        className="max-h-40"
                                     />
                                 </div>
                             )}
@@ -225,56 +224,66 @@ const RegisterPage: React.FC = () => {
                     <div className="space-y-6">
                         {/* Primary 스탯 설정 */}
                         <div className="bg-white border border-gray-200 rounded-lg p-4">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Primary 스탯</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Fixed Attributes</h3>
                             <div className="space-y-3">
-                                {currentPrimaryStats.map((stat, index) => {
-                                    const [min, max] = typeof stat.value === 'string' && stat.value.includes('to')
-                                        ? stat.value.split(' to ').map(Number)
-                                        : [stat.value, stat.value] as number[]
+                                {currentPrimaryStats
+                                    .filter(stat => {
+                                        // min과 max가 같으면 설정에서 제외
+                                        if (typeof stat.value === 'string' && stat.value.includes('to')) {
+                                            const [min, max] = stat.value.split(' to ').map(Number)
+                                            return min !== max
+                                        }
+                                        return false // 고정값인 경우 제외
+                                    })
+                                    .map((stat, index) => {
+                                        const [min, max] = typeof stat.value === 'string' && stat.value.includes('to')
+                                            ? stat.value.split(' to ').map(Number)
+                                            : [stat.value, stat.value] as number[]
 
-                                    const currentValue = primaryStats[stat.name] || min as number
+                                        const currentValue = primaryStats[stat.name] || min as number
 
-                                    return (
-                                        <div key={index} className="flex items-center justify-between">
-                                            <label className="text-sm font-medium text-gray-700 flex-1 min-w-0 pr-3">
-                                                {stat.name}
-                                            </label>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="text-xs text-gray-500 w-6 text-center">{min}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handlePrimaryStatChange(stat.name, Math.max(min as number, currentValue - 1))}
-                                                    disabled={currentValue <= min}
-                                                    className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                >
-                                                    -
-                                                </button>
-                                                <input
-                                                    type="number"
-                                                    min={min}
-                                                    max={max}
-                                                    value={currentValue}
-                                                    onChange={(e) => {
-                                                        const value = Number(e.target.value)
-                                                        if (value >= min && value <= max) {
-                                                            handlePrimaryStatChange(stat.name, value)
-                                                        }
-                                                    }}
-                                                    className="w-16 px-1 py-1 text-xs text-center border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handlePrimaryStatChange(stat.name, Math.min(max, currentValue + 1))}
-                                                    disabled={currentValue >= max}
-                                                    className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                >
-                                                    +
-                                                </button>
-                                                <span className="text-xs text-gray-500 w-6 text-center">{max}</span>
+                                        return (
+                                            <div key={index} className="flex items-center justify-between">
+                                                <label
+                                                    className="text-sm font-medium text-gray-700 flex-1 min-w-0 pr-3">
+                                                    {stat.name}
+                                                </label>
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="text-xs text-gray-500 w-6 text-center">{min}</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handlePrimaryStatChange(stat.name, Math.max(min as number, currentValue - 1))}
+                                                        disabled={currentValue <= min}
+                                                        className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <input
+                                                        type="number"
+                                                        min={min}
+                                                        max={max}
+                                                        value={currentValue}
+                                                        onChange={(e) => {
+                                                            const value = Number(e.target.value)
+                                                            if (value >= min && value <= max) {
+                                                                handlePrimaryStatChange(stat.name, value)
+                                                            }
+                                                        }}
+                                                        className="w-16 px-1 py-1 text-xs text-center border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handlePrimaryStatChange(stat.name, Math.min(max, currentValue + 1))}
+                                                        disabled={currentValue >= max}
+                                                        className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        +
+                                                    </button>
+                                                    <span className="text-xs text-gray-500 w-6 text-center">{max}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })}
                             </div>
                         </div>
 
@@ -283,7 +292,7 @@ const RegisterPage: React.FC = () => {
                             <div className="bg-white border border-gray-200 rounded-lg p-4">
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="text-lg font-semibold text-gray-900">
-                                        Secondary 옵션 ({secondaryOptions.length}/{maxSecondarySlots})
+                                        Random Attributes({secondaryOptions.length}/{maxSecondarySlots})
                                     </h3>
                                     {secondaryOptions.length < maxSecondarySlots && (
                                         <button

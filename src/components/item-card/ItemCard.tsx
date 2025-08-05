@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {type ItemData, RARITY_COLORS, RARITY_ROMAN} from '../../types/item.ts'
 import {useDarkerDbApi} from '../../hooks/useDarkerDBApi.ts'
-import {extractPrimaryStats, getAvailableRarities, groupItemsByRarity} from '../../utils/itemStats.ts'
+import {extractPrimaryStats, getAvailableRarities, groupItemsByRarity} from '../../utils/itemStats.util.ts'
 
 interface ItemCardProps {
     itemName: string

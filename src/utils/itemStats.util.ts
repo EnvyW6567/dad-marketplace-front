@@ -120,9 +120,6 @@ export const extractSecondaryOptions = (item: ItemData): SecondaryStatOption[] =
 }
 
 
-/**
- * 희귀도별로 아이템들을 그룹화
- */
 export const groupItemsByRarity = (items: ItemData[]): Record<string, ItemData> => {
     const grouped: Record<string, ItemData> = {}
 
@@ -133,9 +130,6 @@ export const groupItemsByRarity = (items: ItemData[]): Record<string, ItemData> 
     return grouped
 }
 
-/**
- * 사용 가능한 희귀도 목록 반환
- */
 export const getAvailableRarities = (items: ItemData[]): string[] => {
     if (!items || items.length === 0) {
         return []
