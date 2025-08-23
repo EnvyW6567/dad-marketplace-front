@@ -39,7 +39,6 @@ export const useDarkerDbApi = <T>(endpoint: string): UseDarkerDbApiReturn<T> => 
             const baseUrl = import.meta.env.VITE_API_DARKER_DB_URL || 'https://api.darkerdb.com/v1'
             const url = `${baseUrl}${endpoint}`
 
-            console.log('Fetching from:', url)
 
             const response = await axios.get<DarkerDbResponse<T>>(url, {
                 timeout: 10000, // 10초 타임아웃
