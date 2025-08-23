@@ -22,6 +22,8 @@ export const useAuthInit = () => {
                     }
                 })
 
+                console.log(response.data) // TODO: 콘솔 로그 삭제
+
                 if (response.data.success && response.data.data) {
                     setUser(response.data.data)
                     console.log('사용자 인증 완료:', response.data.data.username)
