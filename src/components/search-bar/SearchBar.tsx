@@ -76,10 +76,6 @@ export const SearchBar = ({
         setSelectedIndex(-1)
     }, [value, equipments])
 
-    useEffect(() => {
-        console.log(filteredEquipments)
-    }, [filteredEquipments]);
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
         setValue(newValue)
