@@ -24,8 +24,7 @@ export const useAuthInit = () => {
                 if (response.status === 200 && response.data) {
                     setUser(response.data)
                     console.log('사용자 인증 완료:', response.data.username)
-                } else if (response.status === 401) {
-                    console.warn('잘못된 인증 정보입니다.')
+                } else {
                     await logout()
                 }
             } catch (error) {
