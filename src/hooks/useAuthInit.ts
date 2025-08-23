@@ -2,7 +2,6 @@ import {useEffect} from 'react'
 import type {User} from '../store/auth.store'
 import {useAuthStore} from '../store/auth.store'
 import axios from 'axios'
-import type {ApiResponse} from '../types/axios'
 
 export const useAuthInit = () => {
     const {setUser, setLoading, logout, isAuthenticated} = useAuthStore()
@@ -13,7 +12,7 @@ export const useAuthInit = () => {
                 setLoading(true)
 
                 const baseUrl = import.meta.env.VITE_API_BASE_URL
-                const response = await axios.get<ApiResponse<User>>(`${baseUrl}/api/user/me`, {
+                const response = await axios.get<User>(`${baseUrl}/api/user/me`, {
                     withCredentials: true,
                     timeout: 10000,
                     headers: {
@@ -22,13 +21,11 @@ export const useAuthInit = () => {
                     }
                 })
 
-                console.log(response.data) // TODO: 콘솔 로그 삭제
-
-                if (response.data.success && response.data.data) {
-                    setUser(response.data.data)
-                    console.log('사용자 인증 완료:', response.data.data.username)
-                } else {
-                    console.warn('사용자 정보를 가져올 수 없습니다:', response.data.error || response.data.message)
+                if (response.status === 200 && response.data) {
+                    setUser(response.data)
+                    console.log('사용자 인증 완료:', response.data.username)
+                } else if (response.status === 401) {
+                    console.warn('잘못된 인증 정보입니다.')
                     await logout()
                 }
             } catch (error) {

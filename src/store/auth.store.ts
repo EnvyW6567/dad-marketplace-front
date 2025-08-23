@@ -4,7 +4,6 @@ import {performLogout} from '../utils/auth.utils'
 export interface User {
     username: string
     displayName?: string
-    email?: string
     avatarUrl?: string
 }
 
