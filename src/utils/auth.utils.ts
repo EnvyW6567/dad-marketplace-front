@@ -1,4 +1,3 @@
-// 토큰 유효성 확인 (API 호출)
 export const checkTokenValidity = async (): Promise<boolean> => {
     try {
         const baseUrl = import.meta.env.VITE_API_BASE_URL
