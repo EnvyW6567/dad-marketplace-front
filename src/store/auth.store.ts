@@ -1,4 +1,5 @@
 import {create} from 'zustand'
+import {performLogout} from '../utils/auth.utils'
 
 export interface User {
     username: string
@@ -27,10 +28,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     },
 
     logout: async () => {
-        set({
-            isAuthenticated: false,
-            user: null
-        })
+        try {
+            await performLogout()
+        } catch (error) {
+            console.error('로그아웃 처리 중 오류:', error)
+        } finally {
+            set({
+                isAuthenticated: false,
+                user: null,
+                isLoading: false
+            })
+        }
     },
 
     setUser: (user: User) => {

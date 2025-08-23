@@ -1,62 +1,44 @@
-import type {User} from "../store/auth.store.ts";
-
-export const decodeJWT = (token: string): any | null => {
+// 토큰 유효성 확인 (API 호출)
+export const checkTokenValidity = async (): Promise<boolean> => {
     try {
-        const parts = token.split('.')
-        if (parts.length !== 3) {
-            return null
-        }
-
-        const payload = parts[1]
-        const decodedPayload = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
-
-        return JSON.parse(decodedPayload)
+        const baseUrl = import.meta.env.VITE_API_BASE_URL
+        const response = await fetch(`${baseUrl}/api/user/me`, {
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        return response.ok
     } catch (error) {
-        console.error('JWT 디코딩 실패:', error)
-        return null
+        console.error('토큰 유효성 확인 실패:', error)
+        return false
     }
 }
 
-export const getUserFromToken = (token: string): User | null => {
-    const decoded = decodeJWT(token)
-    if (!decoded) {
-        return null
-    }
+// 토큰 갱신
+export const refreshToken = async (): Promise<boolean> => {
+    try {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL
+        const response = await fetch(`${baseUrl}/api/auth/refresh`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
 
-    // JWT 페이로드에서 사용자 정보 매핑
-    return {
-        username: decoded.username || decoded.user?.username,
-        displayName: decoded.displayName || decoded.user?.displayName,
-        email: decoded.email || decoded.user?.email,
-        avatarUrl: decoded.avatarUrl || decoded.user?.avatarUrl
+        return response.ok
+    } catch (error) {
+        console.error('토큰 갱신 실패:', error)
+        return false
     }
 }
 
-export const isTokenExpired = (token: string): boolean => {
-    const decoded = decodeJWT(token)
-    if (!decoded || !decoded.exp) {
-        return true
-    }
+// 로그아웃 (클라이언트 측 쿠키 삭제)
+export const performLogout = async (): Promise<void> => {
+    document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict'
+    document.cookie = 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict'
 
-    const currentTime = Date.now() / 1000
-    return decoded.exp < currentTime
-}
-
-export const getCookieValue = (name: string): string | null => {
-    const value = `; ${document.cookie}`
-    const parts = value.split(`; ${name}=`)
-
-    if (parts.length === 2) {
-        const cookieValue = parts.pop()?.split(';').shift()
-        return cookieValue || null
-    }
-    return null
-}
-
-export const getAccessToken = (): string | null => {
-    return getCookieValue('accessToken')
-}
-
-export const getRefreshToken = (): string | null => {
-    return getCookieValue('refreshToken')
+    console.log('쿠키 삭제 완료')
 }

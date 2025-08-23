@@ -1,43 +1,61 @@
 import {useEffect} from 'react'
+import type {User} from '../store/auth.store'
 import {useAuthStore} from '../store/auth.store'
-import {getAccessToken, getUserFromToken, isTokenExpired} from "../utils/auth.utils.ts";
+import axios from 'axios'
+import type {ApiResponse} from '../types/axios'
 
 export const useAuthInit = () => {
     const {setUser, setLoading, logout, isAuthenticated} = useAuthStore()
 
     useEffect(() => {
-        const initializeAuth = () => {
+        const initializeAuth = async () => {
             try {
-                const token = getAccessToken()
+                setLoading(true)
 
-                if (!token) {
-                    setLoading(false)
-                    return
-                }
+                const baseUrl = import.meta.env.VITE_API_BASE_URL
+                const response = await axios.get<ApiResponse<User>>(`${baseUrl}/api/user/me`, {
+                    withCredentials: true,
+                    timeout: 10000,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
 
-                if (isTokenExpired(token)) {
-                    console.log('토큰이 만료되었습니다.')
-                    logout()
-                    return
-                }
-
-                const user = getUserFromToken(token)
-
-                if (user) {
-                    setUser(user)
-                    console.log('사용자 인증 완료:', user.username)
+                if (response.data.success && response.data.data) {
+                    setUser(response.data.data)
+                    console.log('사용자 인증 완료:', response.data.data.username)
                 } else {
-                    console.warn('토큰에서 사용자 정보를 추출할 수 없습니다.')
-                    logout()
+                    console.warn('사용자 정보를 가져올 수 없습니다:', response.data.error || response.data.message)
+                    await logout()
                 }
             } catch (error) {
                 console.error('인증 초기화 중 오류:', error)
-                logout()
+
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        console.log('인증되지 않은 사용자 또는 토큰 만료')
+                        // 토큰이 없거나 만료된 경우 - 조용히 로그아웃 처리
+                        await logout()
+                    } else if (error.response?.status === 403) {
+                        console.log('접근 권한 없음')
+                        await logout()
+                    } else {
+                        console.error('API 호출 실패:', error.response?.status, error.message)
+                        // 네트워크 오류 등은 로그아웃하지 않음
+                        setLoading(false)
+                    }
+                } else {
+                    console.error('예상치 못한 오류:', error)
+                    setLoading(false)
+                }
             }
         }
 
         if (!isAuthenticated) {
             initializeAuth()
+        } else {
+            setLoading(false)
         }
     }, [setUser, setLoading, logout, isAuthenticated])
 

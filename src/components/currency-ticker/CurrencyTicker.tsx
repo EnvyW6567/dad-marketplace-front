@@ -24,7 +24,6 @@ const CurrencyItem: React.FC<{ currency: typeof representativeCurrencies[0] }> =
                 const container = containerRef.current
                 const isOverflowing = container.scrollWidth > container.offsetWidth
 
-                console.log(container.scrollWidth, container.clientWidth)
                 setShowName(!isOverflowing)
             }
         }
